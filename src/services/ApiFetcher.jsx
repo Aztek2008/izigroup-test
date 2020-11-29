@@ -1,9 +1,12 @@
-const baseUrl = "https://randomuser.me/";
+import axios from "axios";
+let results = 10;
 
-const defaultContactsFetcher = (page = 1) => {
-  return fetch(`${baseUrl}/api/?page=${page}&results=10`).then((response) =>
-    response.json()
-  );
+axios.defaults.baseURL = "https://randomuser.me/";
+
+const defaultContactsFetcher = async (page = 1) => {
+  const requestLink = `/api/?page=${page}&results=${results}`;
+  const response = await axios.get(requestLink);
+  return response.data.results;
 };
 
 export default {

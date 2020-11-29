@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 
 import Loader from "./Loader/Loader";
 import Layout from "./Layout/Layout";
-import HomePage from "../pages/HomePage";
+import HomePage from "../pages/Homepage";
 
 const App = () => (
   <Layout>

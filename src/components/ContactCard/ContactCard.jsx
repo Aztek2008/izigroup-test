@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import s from "./ContactCard.module.css";
 
 const ContactCard = ({ contact }) => (
@@ -19,3 +20,7 @@ const ContactCard = ({ contact }) => (
 );
 
 export default ContactCard;
+
+ContactCard.propTypes = {
+  contact: PropTypes.object,
+};

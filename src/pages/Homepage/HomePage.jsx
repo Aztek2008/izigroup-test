@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { v4 as uuidv4 } from "uuid";
+import PropTypes from "prop-types";
 
-import ApiFetcher from "../services/ApiFetcher";
-import Filter from "../components/Filter/Filter";
-import Loader from "../components/Loader/Loader";
-import ContactCard from "../components/ContactCard/ContactCard";
+import ApiFetcher from "../../services/ApiFetcher";
+import Filter from "../../components/Filter/Filter";
+import Loader from "../../components/Loader";
+import ContactCard from "../../components/ContactCard";
 
-import "../index.css";
+import styles from "./HomePage.module.css";
 
 export default class HomePage extends Component {
   state = {
@@ -23,17 +24,16 @@ export default class HomePage extends Component {
   }
 
   handleApiFetcher = () => {
-    ApiFetcher.defaultContactsFetcher()
-      .then((response) => response.results)
-      .then((contacts) =>
+    try {
+      ApiFetcher.defaultContactsFetcher().then((results) =>
         this.setState((prevState) => ({
-          contacts: [...prevState.contacts, ...contacts],
+          contacts: [...prevState.contacts, ...results],
           page: prevState.page + 1,
         }))
-      )
-
-      .catch((error) => this.setState({ error }))
-      .finally(() => this.setState({ isLoading: false }));
+      );
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   changeFilter = (filter) => {
@@ -59,12 +59,12 @@ export default class HomePage extends Component {
 
     return (
       <div>
-        <div className="Header">
+        <div className={styles.Header}>
           <Filter value={filter} onChangeFilter={this.changeFilter} />
         </div>
 
         {visibleContacts.length > 0 && (
-          <ul className="ContactList">
+          <ul className={styles.ContactList}>
             {visibleContacts.map((contact) => (
               <ContactCard key={uuidv4()} contact={contact} />
             ))}
@@ -74,11 +74,23 @@ export default class HomePage extends Component {
         {isLoading && <Loader />}
 
         {contacts.length > 0 && !isLoading && (
-          <button className="showMoreBtnStyle" onClick={this.handleApiFetcher}>
-            <span className="buttonTitle">Show More</span>
+          <button
+            className={styles.showMoreBtnStyle}
+            onClick={this.handleApiFetcher}
+          >
+            <span className={styles.buttonTitle}>Show More</span>
           </button>
         )}
       </div>
     );
   }
 }
+
+HomePage.propTypes = {
+  contacts: PropTypes.array,
+  page: PropTypes.number,
+  isLoading: PropTypes.bool,
+  filter: PropTypes.string,
+  error: PropTypes.object,
+  contact: PropTypes.object,
+};
